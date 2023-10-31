@@ -111,12 +111,14 @@ std::size_t distance(Address address1, Address address2, Town town)
     {
         houseDiff = std::abs(address1.house - address2.house);
     }
+    if (address1.block % blocksPerRow > address2.block % blocksPerRow)
+    {
+        houseDiff = address1.house + std::abs(town.houses - 1 - address2.house) + (houseBetween - 1) * (town.houses - 1);
+    }
     else // if (row1 == row2)
     {
         houseDiff = std::abs(town.houses - 1 - address1.house) + address2.house + (houseBetween - 1) * (town.houses - 1);
     }
-
-    std::cout << houseBetween;
 
     return (blockDiff * blockDistance) + (streetDiff * streetDistance) + (houseDiff * houseDistance);
 }
@@ -142,7 +144,7 @@ int main()
     };
 
     Address validAddress1 = {
-        .block = 0,  // default=0
+        .block = 3,  // default=0
         .street = 1, // default=1
         .house = 2,  // default=2
     };
@@ -168,5 +170,5 @@ int main()
     assert(distance(validAddress1, validAddress1, validTown) == 0);
     std::size_t result = distance(validAddress1, validAddress2, validTown);
     std::cout << "Distance between addresses: " << result << std::endl;
-    // assert(distance(validAddress1, validAddress2, validTown) == 34);
+    //assert(distance(validAddress1, validAddress2, validTown) == 19);
 }
