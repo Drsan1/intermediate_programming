@@ -1,6 +1,6 @@
-#include <iostream>
-#include <cstdint>
 #include <cassert>
+#include <cstdint>
+#include <iostream>
 
 /*
  * Mějme množinu celých čísel reprezentovanou pomocí 64 bitového čísla (naše množina tedy může obsahovat prvky z intervalu [0, 63]). Napište funkce pro práci s množinami:
@@ -18,24 +18,69 @@
 
 using Set = std::uint64_t;
 
-void addToSet(Set&, unsigned);
-void removeFromSet(Set&, unsigned);
-bool contains(const Set&, unsigned);
-void printSet(const Set&);
-Set setUnion(const Set&, const Set&);
-Set setIntersection(const Set&, const Set&);
-Set setSymmetricDifference(const Set&, const Set&);
-bool isEmpty(const Set&);
-bool isSubset(const Set&, const Set&);
-bool areEqual(const Set&, const Set&);
+void addToSet(Set& set, unsigned number) {
+    set = set | 1ULL << number;
+}
 
+void removeFromSet(Set& set, unsigned number) {
+    set = set & (~(1 << number));
+}
+bool contains(const Set& set, unsigned number) {
+    Set my_set = set;
+    my_set = set & (1ULL << number);
+    return my_set;
+}
+
+void printSet(const Set& set) {
+    bool isFirst = false;
+    std::cout << "{";
+    for (int i = 0; i < 64; i++) {
+
+        if ((set >> i) & 1) {
+            if (isFirst == true) {
+                std::cout << ", ";
+            }
+            std::cout << i + 1;
+            isFirst = true;
+        }
+    }
+    std::cout << "}" << std::endl;
+}
+
+Set setUnion(const Set& set_1, const Set& set_2) {
+    return set_1 | set_2;
+}
+
+Set setIntersection(const Set& set_1, const Set& set_2) {
+    return set_1 & set_2;
+}
+
+Set setSymmetricDifference(const Set& set_1, const Set& set_2) {
+    return set_1 ^ set_2;
+}
+
+bool isEmpty(const Set& set) {
+    return set == 0;
+}
+
+bool isSubset(const Set& set_1, const Set& set_2) {
+    return (set_1 & ~set_2) == 0;
+}
+
+bool areEqual(const Set& set_1, const Set& set_2){
+    bool are_equal = false;
+    if (set_1 == set_2) {
+        are_equal = true;
+    }
+    return are_equal;
+}
 int main() {
     Set a = 0;
     Set b = 0;
     const Set c = 0b1011;
     const Set d = 0b1100 | 1ULL << 63;
 
-    // Test addToSet 
+    // Test addToSet
     addToSet(a, 0);
     addToSet(a, 1);
     addToSet(a, 2);
@@ -45,7 +90,7 @@ int main() {
     assert(a == (1ULL << 63 | 1ULL << 3 | 1ULL << 2 | 1ULL << 1 | 1ULL << 0));
 
     // Test removeFromSet
-    
+
     removeFromSet(a, 0);
     removeFromSet(a, 1);
     removeFromSet(a, 2);
